@@ -28,14 +28,29 @@
 #---
 
 import ftplib
+import os
 
-# Creates file object at a given location with only read permissions ('r')
+# Creates file object at a given location with read-only permissions ('r')
 URLfile = open(r"C:\Users\Gerrit\GIS\optimal_agate_picking\URLs.txt",'r')
 
-# Loops through the URLs contained in the file, fetching the DEM from each one
-for URL in URLfile:
-  # FETCH THINGS FROM THE URL
-  print(URL)
+# Opens anonyous connection [login()]to FTP server hosting DEMs
+#FTPserver = FTP('ftp.lmic.state.mn.us')
+#FTPserver.login()
 
+# Loops through the URLs contained in the file
+for URL in URLfile:
+  # Create new filepath to change directories into
+  newDir = os.path.join("pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
+  
+  # Create filename to fetch
+  newDEM = URL[91:]
+  
+  # Change into previously created directory
+  #FTPserver.cwd(newDir)
+  
+  # Retrieve DEM designated in URL
+  #FTPserver.retrbinary('RETR newDEM'
+  print(newDir)
+  print(newDEM)
 # Deletes file object, freeing system resources
 URLfile.close()
