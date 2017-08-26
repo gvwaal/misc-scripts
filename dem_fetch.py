@@ -26,16 +26,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #---
-
 import ftplib
 import os
 
 # Creates file object at a given location with read-only permissions ('r')
 URLfile = open(r"C:\Users\Gerrit\GIS\optimal_agate_picking\URLs.txt",'r')
 
-# Opens anonyous connection [login()]to FTP server hosting DEMs
-#FTPserver = FTP('ftp.lmic.state.mn.us')
-#FTPserver.login()
+# Sets output directory
+outputDir = r"C:\Users\Gerrit\GIS\optimal_agate_picking\DEM_zips"
+
+# Opens anonyous connection [login()] to FTP server hosting DEMs
+FTPserver = FTP('ftp.lmic.state.mn.us')
+FTPserver.login()
 
 # Loops through the URLs contained in the file
 for URL in URLfile:
@@ -46,11 +48,20 @@ for URL in URLfile:
   newDEM = URL[91:]
   
   # Change into previously created directory
-  #FTPserver.cwd(newDir)
+  FTPserver.cwd(newDir)
   
-  # Retrieve DEM designated in URL
-  #FTPserver.retrbinary('RETR newDEM'
+  # Retrieve DEM designated in URL, where the file in newDEM is passed to RETR with the %s placeholder.
+  #
+  #
+  FTPserver.retrbinary('RETR %s' % newDEM, open(os.path.join(outputDir,newDEM), 'wb').write()) #check whether or not the os.path.join works, or if this even saves stuff
+  #
+  #
+  #
+  
   print(newDir)
   print(newDEM)
+
+# Closes FTP connection
+FTPserver.quit()
 # Deletes file object, freeing system resources
 URLfile.close()
