@@ -2,7 +2,7 @@
 Contains scripts I've created for various purposes. All are licensed under the MIT License unless otherwise noted.
 
 ## dem_fetch.py
-Created to grab a bunch of DEMs from a FTP server
+Created to grab a bunch of DEMs from a FTP server.
 
 **todo:** Ensure the script saves the zipped geodatabases correctly. Add unzipping functionality?
 
