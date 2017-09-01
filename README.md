@@ -4,7 +4,7 @@ Contains scripts I've created for various purposes. All are licensed under the M
 ## dem_fetch.py
 Created to grab a bunch of DEMs from a FTP server.
 
-**todo:** Ensure the script saves the zipped geodatabases correctly. Add unzipping functionality?
+**todo:** Ensure the script works for all URLs instead of just two. Mosaic unzipped files together with arcpy?
 
 ## FireStation.py
 Initially created to expidite the process of determining response times from fire departments. A geodatabase with multiple sets of points is provided by the user and the script loops through it, using Network Analyst to determine response times with 5, 10, and 15 minute breaks.

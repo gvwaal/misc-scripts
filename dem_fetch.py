@@ -1,6 +1,6 @@
 # Purpose: a script to download zipped DEMs from URLs in a file for future manipulation.
 #
-# Version 0.9
+# Version 1.0
 #
 # Requires: a pre-exisitng file containing URLs
 #---
@@ -52,11 +52,10 @@ ftp_server.login()
 # Loops through the URLs contained in the file
 for URL in url_file:
   # Create new file path to change directories into
-  new_ftp_dir = os.path.join("pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
-  
+  new_ftp_dir = os.path.join("/pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
+
   # Create filename to fetch
   new_DEM = URL[91:].rstrip('\r\n')
-  print(new_DEM)
 
   # Sets new local file name
   new_local = os.path.join(output_dir,new_DEM)
@@ -64,25 +63,29 @@ for URL in url_file:
   # Change into previously created file path
   print("changing into correct remote directory...")
   ftp_server.cwd(new_ftp_dir)
-
+  
   # Retrieve DEM designated in URL, where the file in newDEM is passed to RETR with the %s placeholder.
   print("fetching " + new_DEM + ", saving to disk...")
   ftp_server.retrbinary('RETR %s' % new_DEM, open(new_local, 'wb').write)
+
+  # Returns to base directory
+  print("returning to base directory...")
+  ftp_server.cwd('/pub/data/elevation/lidar/projects/arrowhead/')
   
-  # Unzips retrieved file
+  # Creates a zipfile object, extracts the given file, and closes the object
   print("unzipping...")
   zip_object = zipfile.ZipFile(new_local, 'r')
   zip_object.extractall(output_dir)
   zip_object.close()
   
-  # Waiting 60 seconds before fetching another file, for the sake of politeness
-  print("waiting 10 seconds...\n")
-  time.sleep(10)
+  # Waiting 5 seconds before fetching another file, for the sake of politeness
+  print("waiting 5 seconds...\n")
+  time.sleep(5)
 
 # Closes FTP connection
 print("closing FTP connection...")
 ftp_server.quit()
 
 # Deletes file object, freeing system resources
-print("closing URL file...\n")
+print("closing URL file...")
 url_file.close()
