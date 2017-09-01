@@ -1,5 +1,6 @@
 # Purpose: a script to download zipped DEMs from URLs in a file for future manipulation.
 #
+# Version 0.9
 #
 # Requires: a pre-exisitng file containing URLs
 #---
@@ -34,43 +35,53 @@ import os
 print("importing time...\n")
 import time
 
+import zipfile
+
 # Creates file object at a given location with read-only permissions ('r')
 print("opening URL file...\n")
-URLfile = open(r"C:\Users\Gerrit\GIS\optimal_agate_picking\URLs.txt",'r')
+url_file = open(r"C:\Users\Gerrit\GIS\optimal_agate_picking\URLs.txt",'r')
 
 # Sets output directory
-print("setting output directory...\n")
-outputDir = r"C:\Users\Gerrit\GIS\optimal_agate_picking\DEM_zips"
+output_dir = r"C:\Users\Gerrit\GIS\optimal_agate_picking\DEM_zips"
 
 # Opens anonyous connection [login()] to FTP server hosting DEMs
 print("connecting to DNR FTP server...")
-FTPserver = ftplib.FTP('ftp.lmic.state.mn.us')
-FTPserver.login()
+ftp_server = ftplib.FTP('ftp.lmic.state.mn.us')
+ftp_server.login()
 
 # Loops through the URLs contained in the file
-for URL in URLfile:
+for URL in url_file:
   # Create new file path to change directories into
-  newDir = os.path.join("pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
+  new_ftp_dir = os.path.join("pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
   
   # Create filename to fetch
-  newDEM = URL[91:]
+  new_DEM = URL[91:-1]
+  print(new_DEM)
+
+  # Sets new local file name
+  new_local = os.path.join(output_dir,new_DEM)
   
   # Change into previously created file path
-  print("changing into proper directory...")
-  FTPserver.cwd(newDir)
-  
+  print("changing into correct remote directory...")
+  ftp_server.cwd(new_ftp_dir)
+
   # Retrieve DEM designated in URL, where the file in newDEM is passed to RETR with the %s placeholder.
-  print("fetching " + newDEM + ", saving to disk...")
-  FTPserver.retrbinary('RETR %s' % newDEM, open(os.path.join(outputDir,newDEM), 'wb').write) #what kind of argument does write need ?_?
+  print("fetching " + new_DEM + ", saving to disk...")
+  ftp_server.retrbinary('RETR %s' % new_DEM, open(new_local, 'wb').write)
   
-  print(newDir)
-  print(newDEM)
+  # Unzips retrieved file
+  zip_object = zipfile.ZipFile(new_local, 'r')
+  zip_object.extractall(output_dir)
+  zip_object.close()
   
   # Waiting 60 seconds before fetching another file, for the sake of politeness
+  print("waiting 10 seconds...\n")
+  time.sleep(10)
 
 # Closes FTP connection
-FTPserver.quit()
+print("closing FTP connection...")
+ftp_server.quit()
 
 # Deletes file object, freeing system resources
 print("closing URL file...\n")
-URLfile.close()
+url_file.close()
