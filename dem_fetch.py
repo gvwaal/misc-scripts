@@ -55,7 +55,7 @@ for URL in url_file:
   new_ftp_dir = os.path.join("pub/data/elevation/lidar/projects/arrowhead/" + URL[71:79] + "geodatabase/")
   
   # Create filename to fetch
-  new_DEM = URL[91:-1]
+  new_DEM = URL[91:].rstrip('\r\n')
   print(new_DEM)
 
   # Sets new local file name
@@ -70,6 +70,7 @@ for URL in url_file:
   ftp_server.retrbinary('RETR %s' % new_DEM, open(new_local, 'wb').write)
   
   # Unzips retrieved file
+  print("unzipping...")
   zip_object = zipfile.ZipFile(new_local, 'r')
   zip_object.extractall(output_dir)
   zip_object.close()
