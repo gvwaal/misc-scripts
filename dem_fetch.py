@@ -2,30 +2,14 @@
 #
 # Version 1.1
 #
-# Requires: a pre-exisitng file containing URLs
+# Requires: a pre-exisitng file containing URLs. This was made for use on the MnDNR's FTP
+# server, so if you'd like to use it on a different server, variables will have to be adjusted.
 #---
 # MIT License (https://en.wikipedia.org/wiki/MIT_License)
 #
 # Copyright (c) 2017 Gerrit VanderWaal
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 #---
+
 print("importing libraries...")
 import ftplib
 import os
@@ -75,6 +59,8 @@ for URL in url_file:
         ftp_server.cwd(new_ftp_dir)
   
         # Retrieve DEM designated in URL, where the file in newDEM is passed to RETR with the %s placeholder.
+		# https://docs.python.org/3.4/library/string.html#string-formatting leads me to believe this may be
+		# unecessary but it stays.
         print("fetching " + new_ftp_dem + ", saving to disk...")
         ftp_server.retrbinary('RETR %s' % new_ftp_dem, open(new_local_dem, 'wb').write)
 
@@ -96,6 +82,8 @@ for URL in url_file:
 
 print("\n" + str(count) + " valid url(s)")
 print(str(invalid_url) + " invalid url(s)\n")
+
+print("deleting downloaded .zip files...)
 
 # Closes FTP connection
 print("freeing system resources...")
